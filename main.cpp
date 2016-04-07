@@ -3,11 +3,10 @@
 
 int main(int argc, char *argv[])
 {
-    //creación de la interfaz
-
+    //Begin the UI creation
     QApplication a(argc, argv);
-    MainWindow w; //instanciamos el objeto de tipo MainWindow
-    w.show();     //mostramos la interfaz gráfica
+    MainWindow w; //MainWindow object creation
+    w.show();     //show UI
     
     return a.exec();
 }

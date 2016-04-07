@@ -13,7 +13,7 @@
 #include <QDebug>
 
 //enumeration represents the differents options
-enum Shape {LINE, RECTANGLE, ELLIPSE, POLYLINE, SELECT, MOVE};
+enum Shape {LINE, RECTANGLE, ELLIPSE, POLYLINE, CURVE,TEXT, SELECT, MOVE, FILL, SINGLEDELETE};
 
 class ZoneDessin: public QWidget
 {

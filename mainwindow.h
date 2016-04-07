@@ -45,16 +45,16 @@ private:
     QAction * openAction, *saveAction, *quitAction; //FileMenu
     QAction * cancelLastAction, *cancelAllAction;
 
-    //Actions de dessin
+    //Actions
     QMenu *color, *width;
-    QAction * shape1, *shape2, *shape3, *shape4, *select, *move;    // selection d'une forme
-    QAction * width1, *width2, *width3;                             // selection d'une epaisseur de trait (parmi trois différentes)
-    QAction * color1, *color2, *color3;                             // selection d'une couleur (parmi trois)
+    QAction * shape1, *shape2, *shape3, *shape4, *select, *move, *shape5, *shape6, *singleDelete, *fill;    // shapes
+    QAction * width1, *width2, *width3;                             // line tickness (among 3)
+    QAction * color1, *color2, *color3;                             // colors selection (among 3)
 
     //Fonctions pour initialiser les attributs (à appeler dans l'ordre)
     void addFileActions();              // menu File
-    void addOutilsZoneDessin();         // initialise les shapex
-    void addParamZoneDessin();          // initialise les width/color
+    void addToolsZone();         // initialise les shapex
+    void addParamZone();          // initialise les width/color
 
 
     /*****************************************************************************
@@ -69,10 +69,10 @@ private:
 
 
     /*****************************************************************************
-     * Menu contextuel circulaire
+     * Menu context circular
      *****************************************************************************/
     QWidget * contextMenu;
-    QToolButton *contextButton1, *contextButton2, *contextButton3, *contextButton4, *contextButton5, *contextButton6;
+    QToolButton *contextButton1, *contextButton2, *contextButton3, *contextButton4, *contextButton5, *contextButton6, *contextButton7, *contextButton8, *contextButton9, *contextButton10;
 
 public slots:
     //slots pour les opérations du menu File

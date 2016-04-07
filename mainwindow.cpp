@@ -21,21 +21,21 @@ using namespace std;
  *****************************************************************************/
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    qDebug()<<"Inicio del constructor";
+    qDebug()<<"Begin constructor";
 
     setWindowTitle("MiniPaint - Graficas Computacionales");
-    if(USE_DESIGNER) //IMPLEMENTATION AVEC QT DESIGNER
+    if(USE_DESIGNER) //QT DESIGNER implementation
     {
         ui->setupUi(this);
         zoneDessin=ui->zoneDessin;
         designerFix();
 
     }
-    else //VIEILLE IMPLEMENTATION
+    else //old implementation
     {
         addFileActions();
-        addOutilsZoneDessin();
-        addParamZoneDessin();
+        addToolsZone();
+        addParamZone();
         zoneDessin=new ZoneDessin();
         setCentralWidget(zoneDessin);
     }
@@ -47,12 +47,19 @@ MainWindow::~MainWindow() {
 
 /*****************************************************************************
  * Slots for file menu
+ * Use the Qt signals and slots mechanism.
+ * A signal is emitted when a particular event occurs and a slot is a function that is called
+ * in response to a particular signal.
+ * Qt widgets have predefined signals and slots that you can use directly from Qt Designer
  *****************************************************************************/
 void MainWindow::openFile() {
+
+    qDebug()<<"Begin openFile";
+
     QString fileName =
-            QFileDialog::getOpenFileName(   this, tr("Open Image"),
-                                            ":/draw/" // répertoire initial
-                                            //tr("Text Files (*.txt *.html)") // filtre
+            QFileDialog::getOpenFileName(   this, tr("Open MiniPaint file (.txt,.html)"),
+                                            ":/draw/"
+                                            //tr("Text Files (*.txt *.html)")
                                             );
     QFile file(fileName);
 
@@ -65,10 +72,13 @@ void MainWindow::openFile() {
 }
 
 void MainWindow::saveFile(){
+
+    qDebug()<<"Begin saveFile";
+
     QString fileName =
-            QFileDialog::getSaveFileName(   this, tr("Open Image"), // titre
-                                            ":/draw/"//, // répertoire initial
-                                            //tr("Text Files (*.txt *.html)") // filtre
+            QFileDialog::getSaveFileName(   this, tr("Open MiniPaint file (.txt,.html)"),
+                                            ":/draw/"//,
+                                            //tr("Text Files (*.txt *.html)")
                                             );
     QFile outfile(fileName);
     if(!outfile.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -80,8 +90,8 @@ void MainWindow::saveFile(){
 }
 
 void MainWindow::quitApp(){
-    qDebug() << "Your are going to quit this app"
-                "";
+    qDebug() << "Your are going to quit this app";
+
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "Confirmation", "Quit?", QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
@@ -89,7 +99,7 @@ void MainWindow::quitApp(){
         QApplication::quit();
     }
     else {
-        //qDebug() << "No";
+        qDebug() << "No";
     }
 }
 
@@ -97,15 +107,18 @@ void MainWindow::quitApp(){
  * Implementation file menu in Qt Designer
  *****************************************************************************/
 void MainWindow::addFileActions() {
+
+    qDebug()<<"Begin addFileActions";
+
     QMenuBar * menuBar = this->menuBar( );
     QMenu * fileMenu = menuBar->addMenu( tr ("&File") );
     toolBar = this->addToolBar( tr("File") );
 
     //new
     openAction = new QAction( QIcon(":/images/open.png"), tr("&Open..."), this);
-    openAction->setShortcut( tr("Ctrl+O")); // accélérateur clavier
-    openAction->setToolTip( tr("Open file")); // bulle d’aide
-    openAction->setStatusTip( tr("Open File")); // barre de statut
+    openAction->setShortcut( tr("Ctrl+O")); // shorcut
+    openAction->setToolTip( tr("Open file")); // tooltip
+    openAction->setStatusTip( tr("Open File")); // statusbar
     connect(openAction, SIGNAL(triggered()), this, SLOT(openFile()));
     //save
     saveAction = new QAction( QIcon(":/images/save.png"), tr("&Save..."), this);
@@ -129,7 +142,10 @@ void MainWindow::addFileActions() {
     toolBar->addAction(quitAction);
 }
 
-void MainWindow::addOutilsZoneDessin() {
+void MainWindow::addToolsZone() {
+
+    qDebug()<<"Begin addToolsZone";
+
     QActionGroup *sgroup=new QActionGroup(this);
     sgroup->setExclusive(false);
     connect(sgroup, SIGNAL(triggered(QAction*)),this,SLOT(setShape(QAction*)));
@@ -140,18 +156,31 @@ void MainWindow::addOutilsZoneDessin() {
     shape3=sgroup->addAction(tr("Ellipse"));
     shape3->setIcon(QIcon(":/images/ellipse.png"));
     shape4=sgroup->addAction(tr("PolyLine"));
+    shape5=sgroup->addAction(tr("Curve"));
+    shape5->setIcon(QIcon(":/images/curve.png"));
+    shape6=sgroup->addAction(tr("Text"));
+    shape6->setIcon(QIcon(":/images/text.png"));
     select=sgroup->addAction(tr("Select"));
     move=sgroup->addAction(tr("Move"));
+    fill=sgroup->addAction(tr("Fill"));
+    singleDelete=sgroup->addAction(tr("Delete"));
 
     toolBar->addAction(shape1);
     toolBar->addAction(shape2);
     toolBar->addAction(shape3);
     toolBar->addAction(shape4);
+    toolBar->addAction(shape5);
+    toolBar->addAction(shape6);
     toolBar->addAction(select);
     toolBar->addAction(move);
+    toolBar->addAction(fill);
+    toolBar->addAction(singleDelete);
 }
 
-void MainWindow::addParamZoneDessin() {
+void MainWindow::addParamZone() {
+
+    qDebug()<<"Begin addParamZone";
+
     //width -------------------------------------------------------
     QActionGroup *wgroup=new QActionGroup(this);
     wgroup->setExclusive(false);
@@ -197,6 +226,9 @@ void MainWindow::addParamZoneDessin() {
  *****************************************************************************/
 
 void MainWindow::designerFix() {
+
+    qDebug()<<"Begin designerFix";
+
     QActionGroup * group = new QActionGroup( this );
     group->addAction( ui->actionLine );
     group->addAction( ui->actionRectangle );
@@ -204,6 +236,10 @@ void MainWindow::designerFix() {
     group->addAction( ui->actionPolyline );
     group->addAction( ui->actionSelect);
     group->addAction( ui->actionMove );
+    group->addAction( ui->actionFill );
+    group->addAction( ui->actionSingleDelete );
+    group->addAction( ui->actionCurve);
+    group->addAction( ui->actionText);
     group->setExclusive(true);
 
     QPixmap px(33, 33);
@@ -218,6 +254,11 @@ void MainWindow::designerFix() {
     contextButton4=new QToolButton(contextMenu);
     contextButton5=new QToolButton(contextMenu);
     contextButton6=new QToolButton(contextMenu);
+    contextButton7=new QToolButton(contextMenu);
+    contextButton8=new QToolButton(contextMenu);
+    contextButton9=new QToolButton(contextMenu);
+    contextButton10=new QToolButton(contextMenu);
+
 
     contextButton1->setDefaultAction(ui->actionSelect);
     contextButton2->setDefaultAction(ui->actionMove);
@@ -225,6 +266,10 @@ void MainWindow::designerFix() {
     contextButton4->setDefaultAction(ui->actionRectangle);
     contextButton5->setDefaultAction(ui->actionEllipse);
     contextButton6->setDefaultAction(ui->actionPolyline);
+    contextButton7->setDefaultAction(ui->actionCurve);
+    contextButton8->setDefaultAction(ui->actionText);
+    contextButton9->setDefaultAction(ui->actionSingleDelete);
+    contextButton10->setDefaultAction(ui->actionFill);
 
     contextButton1->setIconSize(QSize(32,32));
     contextButton2->setIconSize(QSize(32,32));
@@ -232,6 +277,10 @@ void MainWindow::designerFix() {
     contextButton4->setIconSize(QSize(32,32));
     contextButton5->setIconSize(QSize(32,32));
     contextButton6->setIconSize(QSize(32,32));
+    contextButton7->setIconSize(QSize(32,32));
+    contextButton8->setIconSize(QSize(32,32));
+    contextButton9->setIconSize(QSize(32,32));
+    contextButton10->setIconSize(QSize(32,32));
 
     contextButton1->setStyleSheet("width: 32; height: 32; background: transparent; border-width: 0");
     contextButton2->setStyleSheet("width: 32; height: 32; background: transparent; border-width: 0");
@@ -239,6 +288,10 @@ void MainWindow::designerFix() {
     contextButton4->setStyleSheet("width: 32; height: 32; background: transparent; border-width: 0");
     contextButton5->setStyleSheet("width: 32; height: 32; background: transparent; border-width: 0");
     contextButton6->setStyleSheet("width: 32; height: 32; background: transparent; border-width: 0");
+    contextButton7->setStyleSheet("width: 32; height: 32; background: transparent; border-width: 0");
+    contextButton8->setStyleSheet("width: 32; height: 32; background: transparent; border-width: 0");
+    contextButton9->setStyleSheet("width: 32; height: 32; background: transparent; border-width: 0");
+    contextButton10->setStyleSheet("width: 32; height: 32; background: transparent; border-width: 0");
 
     contextMenu->setStyleSheet("background-image: url(:/images/donut.png)");
 
@@ -248,6 +301,10 @@ void MainWindow::designerFix() {
     contextButton4->move(75-16  , 130-16);
     contextButton5->move(25-16  , 50-16);
     contextButton6->move(25-16  , 104-16);
+    contextButton7->move(25-16  , 75-16);
+    contextButton8->move(125-16  , 75-16);
+    contextButton9->move(45-16  , 124-16);
+    contextButton10->move(105-16  , 124-16);
 
     hideContextMenu();
 
@@ -268,6 +325,9 @@ void MainWindow::designerFix() {
  * Slots for actions in the paint section
  *****************************************************************************/
 void MainWindow::setPenWidth(QAction* sender) {
+
+    qDebug()<<"Begin setPenWidth";
+
     width->menuAction()->setText(sender->text());
     if(sender == width1) {zoneDessin->setPenWidth(1);}
     else if(sender == width2) {zoneDessin->setPenWidth(3);}
@@ -275,6 +335,9 @@ void MainWindow::setPenWidth(QAction* sender) {
 }
 
 void MainWindow::setPenColor(QAction* sender) {
+
+    qDebug()<<"Begin setPenColor";
+
     color->menuAction()->setText(sender->text());
     if(sender == color1) {zoneDessin->setPenColor(Qt::red);}
     else if(sender == color2) {zoneDessin->setPenColor(Qt::green);}
@@ -282,35 +345,53 @@ void MainWindow::setPenColor(QAction* sender) {
 }
 
 void MainWindow::setShape(QAction* sender) {
+    qDebug()<<"Begin setShape";
+
     if(sender == shape1) {zoneDessin->setShape(LINE);}
     else if(sender == shape2) {zoneDessin->setShape(RECTANGLE);}
     else if(sender == shape3) {zoneDessin->setShape(ELLIPSE);}
     else if(sender == shape4) {zoneDessin->setShape(POLYLINE);}
+    else if(sender == shape5) {zoneDessin->setShape(CURVE);}
+    else if(sender == shape6) {zoneDessin->setShape(TEXT);}
     else if(sender == select) {zoneDessin->setShape(SELECT);}
     else if(sender == move) {zoneDessin->setShape(MOVE);}
+    else if(sender == move) {zoneDessin->setShape(FILL);}
+    else if(sender == move) {zoneDessin->setShape(SINGLEDELETE);}
 }
 
 void MainWindow::setShape2(QAction* sender) {
+
+    qDebug()<<"Begin setShape2";
+
     if(sender == ui->actionLine) {zoneDessin->setShape(LINE);}
     else if(sender == ui->actionRectangle) {zoneDessin->setShape(RECTANGLE);}
     else if(sender == ui->actionEllipse) {zoneDessin->setShape(ELLIPSE);}
     else if(sender == ui->actionPolyline) {zoneDessin->setShape(POLYLINE);}
+    else if(sender == ui->actionCurve) {zoneDessin->setShape(CURVE);}
+    else if(sender == ui->actionText) {zoneDessin->setShape(TEXT);}
     else if(sender == ui->actionSelect) {zoneDessin->setShape(SELECT);}
     else if(sender == ui->actionMove) {zoneDessin->setShape(MOVE);}
+    else if(sender == ui->actionFill) {zoneDessin->setShape(FILL);}
+    else if(sender == ui->actionSingleDelete) {zoneDessin->setShape(SINGLEDELETE);}
 
 }
 
 void MainWindow::setPenColor2() {
+
+    qDebug()<<"Begin setPenColor2";
+
     QColor color = QColorDialog::getColor(Qt::black, this);
     zoneDessin->setPenColor(color);
 
-    //on actualise l'icone avec la bonne couleur
+    //it updates the icon with the right color
     QPixmap px(33, 33);
     px.fill(color);
     ui->actionColor->setIcon(px);
 }
 
 void MainWindow::setPenWidth2() {
+    qDebug()<<"Begin setPenWidth2";
+
     zoneDessin->setPenWidth(ui->widthSlider->value());
 }
 
@@ -319,7 +400,8 @@ void MainWindow::setPenWidth2() {
  *****************************************************************************/
 
 void MainWindow::showContextMenu() {
-    //qDebug() << "affichage du menu contextuel";
+     qDebug()<<"Begin showContextMenu";
+    qDebug() << "display the context menu";
 
     QPoint p=cursorPos(this);
     int r=80;
@@ -328,6 +410,6 @@ void MainWindow::showContextMenu() {
 }
 
 void MainWindow::hideContextMenu() {
-    //qDebug()<<"hiding context menu";
+    qDebug()<<"Begin hideContextMenu";
     contextMenu->hide();
 }
