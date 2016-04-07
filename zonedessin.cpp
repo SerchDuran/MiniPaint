@@ -7,11 +7,13 @@
 ZoneDessin::ZoneDessin(QWidget *parent) :
     QWidget(parent)
 {
+    qDebug()<<"Begin ZoneDessin";
+
     setMinimumSize(800,600);
 
     selectPen=QPen(Qt::black, 1, Qt::DotLine, Qt::RoundCap, Qt::RoundJoin);
-//    selectedPen=QPen(Qt::yellow, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-//    curPen=QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    selectedPen=QPen(Qt::yellow, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    curPen=QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 
     this->setMouseTracking(true);
 
@@ -23,6 +25,9 @@ ZoneDessin::~ZoneDessin() {
 }
 
 void ZoneDessin::addShapeMachine() {
+
+    qDebug()<<"Begin addShapeMachine";
+
     addShape = new QStateMachine();
 
     QState * sGlobal=new QState();
@@ -63,6 +68,16 @@ void ZoneDessin::addShapeMachine() {
     addMouseTrans(sAddEll1, sAddEll2, this, QEvent::MouseButtonPress, Qt::LeftButton, this, SLOT(setLastPoint()));
     addMouseTrans(sAddEll2, sAddEll2, this, QEvent::MouseMove, Qt::NoButton, this, SLOT(setEndPointEll()));
     addMouseTrans(sAddEll2, sAddEll1, this, QEvent::MouseButtonRelease, Qt::LeftButton, this, SLOT(saveEll()));
+
+    //Curve
+    QState * sAddCurve = new QState(sAddShape);
+
+    QState * sAddCurve1 = new QState(sAddCurve);
+    QState * sAddCurve2 = new QState(sAddCurve);
+    sAddCurve->setInitialState(sAddCurve1);
+    addMouseTrans(sAddCurve1, sAddCurve2, this, QEvent::MouseButtonPress, Qt::LeftButton, this, SLOT(setLastPoint()));
+    addMouseTrans(sAddCurve2, sAddCurve2, this, QEvent::MouseMove, Qt::NoButton, this, SLOT(setEndPointCurve()));
+    addMouseTrans(sAddCurve2, sAddCurve1, this, QEvent::MouseButtonRelease, Qt::LeftButton, this, SLOT(saveCurve()));
 
     //line
     QState * sAddPolyLine = new QState(sAddShape);
@@ -106,6 +121,7 @@ void ZoneDessin::addShapeMachine() {
     addCustomTrans(sGlobal,sAddRect,RECTANGLE);
     addCustomTrans(sGlobal,sAddEll,ELLIPSE);
     addCustomTrans(sGlobal,sAddPolyLine,POLYLINE);
+    addCustomTrans(sGlobal,sAddCurve,CURVE);
     addCustomTrans(sGlobal,sSelectShape,SELECT);
     addCustomTrans(sGlobal,sMoveSelect,MOVE);
 
@@ -189,6 +205,26 @@ void ZoneDessin::saveEll() {
     displayList.push_back(QPathPen(path,curPen));
     update();
 }
+/* Curve *******************************************************************/
+void ZoneDessin::setEndPointCurve() {
+    endPoint = cursorPos(this);
+    QPainterPath path;
+    path.moveTo(lastPoint);
+    path.cubicTo(lastPoint.x(),lastPoint.y(),endPoint.x()-lastPoint.x(),endPoint.y()-lastPoint.y(),lastPoint.x(),lastPoint.y());
+    curPath=path;
+
+    update();
+}
+void ZoneDessin::saveCurve() {
+    endPoint = cursorPos(this);
+
+    QPainterPath path;
+    curPath=path;
+    path.moveTo(lastPoint);
+    path.cubicTo(lastPoint.x(),lastPoint.y(),endPoint.x()-lastPoint.x(),endPoint.y()-lastPoint.y(),endPoint.x(),endPoint.y());
+    displayList.push_back(QPathPen(path,curPen));
+    update();
+}
 /* polyline ******************************************************************/
 void ZoneDessin::setEndPointPolyLine() {
     endPoint = cursorPos(this);
@@ -236,11 +272,11 @@ void ZoneDessin::setEndPointSelect() {
     update();
 }
 void ZoneDessin::saveSelect() {
-    //qDebug() << "Selecting the following elements" << endl;
+    qDebug() << "Selecting the following elements" << endl;
     selected.clear();
     for (DisplayList::iterator ci = displayList.begin(); ci != displayList.end(); ++ci) {
         if(select.contains(ci->path)) {
-            //qDebug() << ci->path;
+            qDebug() << ci->path;
             selected.push_back(&(*ci));
         }
     }
@@ -257,7 +293,7 @@ void ZoneDessin::clearSelect() {
     QPainterPath path;
     select=path;
     selected.clear();
-    //qDebug() << "clearing selection";
+    qDebug() << "clearing selection";
 }
 /* move **********************************************************************/
 void ZoneDessin::setEndPointMove() {
@@ -295,7 +331,7 @@ void ZoneDessin::readDisplayList(QDataStream &in) {
     int n;
     in >> n;
     for(int i=0; i<n ; i++) {
-        //qDebug << in.status;
+        //qDebug() << in.status;
         QPainterPath path;
         QPen pen;
         in >> path;
@@ -313,7 +349,7 @@ void ZoneDessin::writeDisplayList(QDataStream* out) {
     *out << n;
     for (DisplayList::const_iterator ci = displayList.begin(); ci != displayList.end(); ++ci) {
         *out << (ci->path) << (ci->pen);
-        //qDebug() << "ECRITURE " << (ci->path) << (ci->pen);
+        //qDebug() << "WRITE " << (ci->path) << (ci->pen);
     }
 }
 
@@ -322,6 +358,10 @@ void ZoneDessin::writeDisplayList(QDataStream* out) {
  *****************************************************************************/
 void ZoneDessin::paintEvent(QPaintEvent *e)
 {
+
+     qDebug()<<"paintEvent";
+
+
     QPainter painter(this);
 
     //show selection

@@ -80,6 +80,7 @@ public slots:
     void setEndPointLine();
     void setEndPointRect();
     void setEndPointEll();
+    void setEndPointCurve();
     void setEndPointPolyLine();
     void setEndPointSelect();
     void setEndPointMove();
@@ -91,6 +92,7 @@ public slots:
     void saveLine();
     void saveRect();
     void saveEll();
+    void saveCurve();
     void savePolyLine();
     void saveSelect();
 
