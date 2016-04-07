@@ -35,6 +35,7 @@ public:
     //functions for erase
     void cancelLast();
     void cancelAll();
+    void singleDelete();
 
     //serialization and deserealization
     void readDisplayList(QDataStream &in);

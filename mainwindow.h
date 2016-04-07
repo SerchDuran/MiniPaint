@@ -43,11 +43,11 @@ private:
      *****************************************************************************/
     QToolBar * toolBar;
     QAction * openAction, *saveAction, *quitAction; //FileMenu
-    QAction * cancelLastAction, *cancelAllAction;
+    QAction * cancelLastAction, *cancelAllAction, *singleDeleteAction;
 
     //Actions
     QMenu *color, *width;
-    QAction * shape1, *shape2, *shape3, *shape4, *select, *move, *shape5, *shape6, *singleDelete, *fill;    // shapes
+    QAction * shape1, *shape2, *shape3, *shape4, *select, *move, *shape5, *shape6, *fill;    // shapes
     QAction * width1, *width2, *width3;                             // line tickness (among 3)
     QAction * color1, *color2, *color3;                             // colors selection (among 3)
 
@@ -97,6 +97,7 @@ public slots:
 
     void cancelLast() {zoneDessin->cancelLast();}
     void cancelAll() {zoneDessin->cancelAll();}
+    void singleDelete() {zoneDessin->singleDelete();}
 };
 
 #endif // MAINWINDOW_H

@@ -282,6 +282,16 @@ void ZoneDessin::cancelLast() {
         update();
     }
 }
+
+void ZoneDessin::singleDelete() {
+    if (!displayList.empty()){
+        displayList.get_allocator();
+        displayList.clear();
+        curPath=QPainterPath();
+        update();
+    }
+}
+
 void ZoneDessin::cancelAll() {
     selected.clear();
     displayList.clear();

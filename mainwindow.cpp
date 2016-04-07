@@ -163,7 +163,7 @@ void MainWindow::addToolsZone() {
     select=sgroup->addAction(tr("Select"));
     move=sgroup->addAction(tr("Move"));
     fill=sgroup->addAction(tr("Fill"));
-    singleDelete=sgroup->addAction(tr("Delete"));
+//    deleteFigure=sgroup->addAction(tr("Delete"));
 
     toolBar->addAction(shape1);
     toolBar->addAction(shape2);
@@ -174,7 +174,7 @@ void MainWindow::addToolsZone() {
     toolBar->addAction(select);
     toolBar->addAction(move);
     toolBar->addAction(fill);
-    toolBar->addAction(singleDelete);
+//    toolBar->addAction(deleteFigure);
 }
 
 void MainWindow::addParamZone() {
@@ -207,8 +207,11 @@ void MainWindow::addParamZone() {
     //list --------------------------------------------------------
     cancelLastAction = new QAction(tr("&Cancel"), this);
     cancelAllAction = new QAction(tr("&Cancel All"), this);
+    singleDeleteAction = new QAction(tr("&Delete Selected"), this);
+
     connect(cancelLastAction, SIGNAL(triggered()), this, SLOT(cancelLast()));
     connect(cancelAllAction, SIGNAL(triggered()), this, SLOT(cancelAll()));
+    connect(singleDeleteAction, SIGNAL(triggered()), this, SLOT(singleDelete()));
 
     color = new QMenu();
     color->addAction(color1);
@@ -219,6 +222,7 @@ void MainWindow::addParamZone() {
 
     toolBar->addAction(cancelLastAction);
     toolBar->addAction(cancelAllAction);
+    toolBar->addAction(singleDeleteAction);
 }
 
 /*****************************************************************************
@@ -356,7 +360,7 @@ void MainWindow::setShape(QAction* sender) {
     else if(sender == select) {zoneDessin->setShape(SELECT);}
     else if(sender == move) {zoneDessin->setShape(MOVE);}
     else if(sender == move) {zoneDessin->setShape(FILL);}
-    else if(sender == move) {zoneDessin->setShape(SINGLEDELETE);}
+//    else if(sender == deleteFigure) {zoneDessin->setShape(SINGLEDELETE);}
 }
 
 void MainWindow::setShape2(QAction* sender) {

@@ -51,8 +51,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>713</width>
-         <height>539</height>
+         <width>703</width>
+         <height>531</height>
         </rect>
        </property>
        <property name="autoFillBackground">
@@ -69,7 +69,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -86,6 +86,7 @@
     </property>
     <addaction name="actionCancel"/>
     <addaction name="actionCancel_All"/>
+    <addaction name="actionDelete_selected"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -275,7 +276,7 @@
   </action>
   <action name="actionCancel">
    <property name="text">
-    <string>&amp;Back</string>
+    <string>&amp;Clear last</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
@@ -356,6 +357,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+D</string>
+   </property>
+  </action>
+  <action name="actionDelete_selectet">
+   <property name="text">
+    <string>Delete selected</string>
+   </property>
+  </action>
+  <action name="actionDelete_selected">
+   <property name="text">
+    <string>Delete selected</string>
    </property>
   </action>
  </widget>
