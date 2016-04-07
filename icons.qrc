@@ -16,5 +16,9 @@
         <file>images/color.png</file>
         <file>images/donut.png</file>
         <file>images/icon.png</file>
+        <file>images/curve.png</file>
+        <file>images/delete.png</file>
+        <file>images/fill.png</file>
+        <file>images/text.png</file>
     </qresource>
 </RCC>
