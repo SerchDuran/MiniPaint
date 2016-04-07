@@ -11,7 +11,9 @@
 #include <QTimer>
 #include <QPushButton>
 
+
 using namespace std;
+
 
 
 /*****************************************************************************
@@ -19,12 +21,15 @@ using namespace std;
  *****************************************************************************/
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    setWindowTitle("MiniPaint - Gráficas Computacionales");
+    qDebug()<<"Inicio del constructor";
+
+    setWindowTitle("MiniPaint - Graficas Computacionales");
     if(USE_DESIGNER) //IMPLEMENTATION AVEC QT DESIGNER
     {
         ui->setupUi(this);
         zoneDessin=ui->zoneDessin;
         designerFix();
+
     }
     else //VIEILLE IMPLEMENTATION
     {
