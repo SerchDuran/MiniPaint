@@ -207,8 +207,10 @@ void MainWindow::addParamZone() {
     //list --------------------------------------------------------
     cancelLastAction = new QAction(tr("&Cancel"), this);
     cancelAllAction = new QAction(tr("&Cancel All"), this);
+    cancelSingleAction = new QAction(tr("&Cancel Single"), this);
     connect(cancelLastAction, SIGNAL(triggered()), this, SLOT(cancelLast()));
     connect(cancelAllAction, SIGNAL(triggered()), this, SLOT(cancelAll()));
+    connect(cancelSingleAction, SIGNAL(triggered()), this, SLOT(cancelSingle()));
 
     color = new QMenu();
     color->addAction(color1);
@@ -219,6 +221,7 @@ void MainWindow::addParamZone() {
 
     toolBar->addAction(cancelLastAction);
     toolBar->addAction(cancelAllAction);
+    toolBar->addAction(cancelSingleAction);
 }
 
 /*****************************************************************************

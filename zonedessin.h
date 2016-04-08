@@ -13,7 +13,7 @@
 #include <QDebug>
 
 //enumeration represents the differents options
-enum Shape {LINE, RECTANGLE, ELLIPSE, POLYLINE, CURVE,TEXT, SELECT, MOVE, FILL, SINGLEDELETE};
+enum Shape {LINE, RECTANGLE, ELLIPSE, POLYLINE, CURVE, TEXT, SELECT, MOVE, FILL, SINGLEDELETE};
 
 class ZoneDessin: public QWidget
 {
@@ -35,6 +35,7 @@ public:
     //functions for erase
     void cancelLast();
     void cancelAll();
+    void cancelSingle();
 
     //serialization and deserealization
     void readDisplayList(QDataStream &in);
@@ -81,6 +82,7 @@ public slots:
     void setEndPointRect();
     void setEndPointEll();
     void setEndPointCurve();
+    void setEndPointText();
     void setEndPointPolyLine();
     void setEndPointSelect();
     void setEndPointMove();
@@ -93,6 +95,7 @@ public slots:
     void saveRect();
     void saveEll();
     void saveCurve();
+    void saveText();
     void savePolyLine();
     void saveSelect();
 

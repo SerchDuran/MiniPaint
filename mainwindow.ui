@@ -85,6 +85,7 @@
      <string>Edit</string>
     </property>
     <addaction name="actionCancel"/>
+    <addaction name="actionCancel_Single"/>
     <addaction name="actionCancel_All"/>
    </widget>
    <addaction name="menuFile"/>
@@ -356,6 +357,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+D</string>
+   </property>
+  </action>
+  <action name="actionCancel_Single">
+   <property name="text">
+    <string>&amp;Clear single</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear single</string>
    </property>
   </action>
  </widget>

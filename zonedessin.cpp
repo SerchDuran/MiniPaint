@@ -79,6 +79,16 @@ void ZoneDessin::addShapeMachine() {
     addMouseTrans(sAddCurve2, sAddCurve2, this, QEvent::MouseMove, Qt::NoButton, this, SLOT(setEndPointCurve()));
     addMouseTrans(sAddCurve2, sAddCurve1, this, QEvent::MouseButtonRelease, Qt::LeftButton, this, SLOT(saveCurve()));
 
+    //Text
+    QState * sAddText = new QState(sAddShape);
+
+    QState * sAddText1 = new QState(sAddText);
+    QState * sAddText2 = new QState(sAddText);
+    sAddText->setInitialState(sAddText1);
+    addMouseTrans(sAddText1, sAddText2, this, QEvent::MouseButtonPress, Qt::LeftButton, this, SLOT(setLastPoint()));
+    addMouseTrans(sAddText2, sAddText2, this, QEvent::MouseMove, Qt::NoButton, this, SLOT(setEndPointText()));
+    addMouseTrans(sAddText2, sAddText1, this, QEvent::MouseButtonRelease, Qt::LeftButton, this, SLOT(saveText()));
+
     //line
     QState * sAddPolyLine = new QState(sAddShape);
 
@@ -116,14 +126,28 @@ void ZoneDessin::addShapeMachine() {
     addMouseTrans(sMoveSelect2, sMoveSelect2, this, QEvent::MouseMove, Qt::NoButton, this, SLOT(setEndPointMove()));
     addMouseTrans(sMoveSelect2, sMoveSelect1, this, QEvent::MouseButtonRelease, Qt::LeftButton, this, SLOT(setLastPoint()));
 
+    //singleDelete
+    QState * sSingleDeleteSelect = new QState(sSelection);
+
+    QState * sSingleDeleteSelect1 = new QState(sSingleDeleteSelect);
+    QState * sSingleDeleteSelect2 = new QState(sSingleDeleteSelect);
+    sSingleDeleteSelect->setInitialState(sSingleDeleteSelect1);
+    sSelection->setInitialState(sSingleDeleteSelect);
+    addMouseTrans(sSingleDeleteSelect1, sSingleDeleteSelect2, this, QEvent::MouseButtonPress, Qt::LeftButton, this, SLOT(setLastPoint()));
+    addMouseTrans(sSingleDeleteSelect2, sSingleDeleteSelect2, this, QEvent::MouseMove, Qt::NoButton, this, SLOT(singleDelete()));
+    addMouseTrans(sSingleDeleteSelect2, sSingleDeleteSelect1, this, QEvent::MouseButtonRelease, Qt::LeftButton, this, SLOT(saveText()));
+
+
     //transitions parent->shape
     addCustomTrans(sGlobal,sAddLine,LINE);
     addCustomTrans(sGlobal,sAddRect,RECTANGLE);
     addCustomTrans(sGlobal,sAddEll,ELLIPSE);
     addCustomTrans(sGlobal,sAddPolyLine,POLYLINE);
     addCustomTrans(sGlobal,sAddCurve,CURVE);
+    addCustomTrans(sGlobal,sAddText,TEXT);
     addCustomTrans(sGlobal,sSelectShape,SELECT);
     addCustomTrans(sGlobal,sMoveSelect,MOVE);
+    addCustomTrans(sGlobal,sSingleDeleteSelect,SINGLEDELETE);
 
     sAddShape->setInitialState(sIdle);
     addShape->addState(sGlobal);
@@ -225,6 +249,36 @@ void ZoneDessin::saveCurve() {
     displayList.push_back(QPathPen(path,curPen));
     update();
 }
+
+/* Text *******************************************************************/
+void ZoneDessin::setEndPointText() {
+
+    qDebug()<<"Begin setEndPointText";
+    endPoint = cursorPos(this);
+    QPainterPath path;
+    path.moveTo(lastPoint);
+    QFont f("Helvetica");
+    f.setPixelSize(50);
+    f.setBold(true);
+    path.addText(lastPoint.x(),lastPoint.y(), f,tr("Hola Profesor Penedo"));
+
+    curPath=path;
+
+    update();
+}
+void ZoneDessin::saveText() {
+
+    qDebug()<<"Begin setEndPointText";
+    //    endPoint = cursorPos(this);
+
+    //    QPainterPath path;
+    //    curPath=path;
+    //    path.moveTo(lastPoint);
+    //    path.cubicTo(lastPoint.x(),lastPoint.y(),endPoint.x()-lastPoint.x(),endPoint.y()-lastPoint.y(),endPoint.x(),endPoint.y());
+    //    displayList.push_back(QPathPen(path,curPen));
+    //    update();
+}
+
 /* polyline ******************************************************************/
 void ZoneDessin::setEndPointPolyLine() {
     endPoint = cursorPos(this);
@@ -319,11 +373,25 @@ void ZoneDessin::cancelLast() {
     }
 }
 void ZoneDessin::cancelAll() {
+    qDebug()<<"Begin cancelAll";
     selected.clear();
     displayList.clear();
     curPath=QPainterPath();
     update();
+
 }
+
+void ZoneDessin::cancelSingle() {
+    qDebug()<<"Begin cancelSingle";
+
+    if (!displayList.empty()){
+        displayList.get_allocator();
+        displayList.clear();
+        curPath=QPainterPath();
+        update();
+    }
+}
+
 
 /* serialization *************************************************************/
 void ZoneDessin::readDisplayList(QDataStream &in) {
@@ -359,7 +427,7 @@ void ZoneDessin::writeDisplayList(QDataStream* out) {
 void ZoneDessin::paintEvent(QPaintEvent *e)
 {
 
-     qDebug()<<"paintEvent";
+    qDebug()<<"paintEvent";
 
 
     QPainter painter(this);

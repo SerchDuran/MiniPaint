@@ -43,7 +43,7 @@ private:
      *****************************************************************************/
     QToolBar * toolBar;
     QAction * openAction, *saveAction, *quitAction; //FileMenu
-    QAction * cancelLastAction, *cancelAllAction;
+    QAction * cancelLastAction, *cancelAllAction, *cancelSingleAction;
 
     //Actions
     QMenu *color, *width;
@@ -97,6 +97,7 @@ public slots:
 
     void cancelLast() {zoneDessin->cancelLast();}
     void cancelAll() {zoneDessin->cancelAll();}
+    void cancelSingle() {zoneDessin->cancelSingle();}
 };
 
 #endif // MAINWINDOW_H
