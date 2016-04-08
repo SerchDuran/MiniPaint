@@ -268,15 +268,17 @@ void ZoneDessin::setEndPointText() {
 }
 void ZoneDessin::saveText() {
 
-    qDebug()<<"Begin setEndPointText";
-    //    endPoint = cursorPos(this);
+    QPainterPath path;
+    curPath=path;
+    path.moveTo(lastPoint);
 
-    //    QPainterPath path;
-    //    curPath=path;
-    //    path.moveTo(lastPoint);
-    //    path.cubicTo(lastPoint.x(),lastPoint.y(),endPoint.x()-lastPoint.x(),endPoint.y()-lastPoint.y(),endPoint.x(),endPoint.y());
-    //    displayList.push_back(QPathPen(path,curPen));
-    //    update();
+    QFont f("Helvetica");
+    f.setPixelSize(50);
+    f.setBold(true);
+    path.addText(lastPoint.x(),lastPoint.y(), f,tr("Hola Profesor Penedo"));
+
+    displayList.push_back(QPathPen(path,curPen));
+    update();
 }
 
 /* polyline ******************************************************************/
